@@ -35,10 +35,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="App.Metrics.Concurrency, Version=4.3.0.0, Culture=neutral, PublicKeyToken=0d5193a913d1b812, processorArchitecture=MSIL">
-      <HintPath>..\..\Nuget\App.Metrics.Concurrency.4.3.0\lib\netstandard2.0\App.Metrics.Concurrency.dll</HintPath>
+      <HintPath>..\..\..\SDK\SDK-CheckID-C#\App.Metrics.Concurrency.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\Nuget\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\SDK\SDK-CheckID-C#\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -52,7 +52,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="websocket-sharp-customheaders, Version=1.0.2.31869, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
-      <HintPath>..\..\Nuget\websocket-sharp-customheaders.1.0.2.31869\lib\net35\websocket-sharp-customheaders.dll</HintPath>
+      <HintPath>..\..\..\SDK\SDK-CheckID-C#\websocket-sharp-customheaders.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +71,7 @@
     <Compile Include="Models\DocumentDigest.cs" />
     <Compile Include="Models\NotifyAutoReadDocument.cs" />
     <Compile Include="Models\RequireBiometricEvidence.cs" />
+    <Compile Include="Models\RequireFingerEnrollment.cs" />
     <Compile Include="Models\ScanDocument.cs" />
     <Compile Include="Models\ScanType.cs" />
     <Compile Include="Models\TransactionDataBiometricAuth.cs" />
@@ -100,6 +101,8 @@
     <Compile Include="Request\MultipleSelect.cs" />
     <Compile Include="Response\DisplayInformation\DisplayInformationResp.cs" />
     <Compile Include="Response\DisplayInformation\DataDisplayInformation.cs" />
+    <Compile Include="Response\FingerEnrollment\DataFingerEnrollment.cs" />
+    <Compile Include="Response\FingerEnrollment\FingerEnrollmentResp.cs" />
     <Compile Include="Response\GetDocumentDetails\DocumentDetailsResp.cs" />
     <Compile Include="Response\GetDocumentDetails\DataDocumentDetails.cs" />
     <Compile Include="Models\MultipleSelected.cs" />

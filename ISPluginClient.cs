@@ -9,6 +9,7 @@ using PluginICAOClientSDK.Response.DisplayInformation;
 using PluginICAOClientSDK.Response.CardDetectionEvent;
 using PluginICAOClientSDK.Response.ScanDocument;
 using PluginICAOClientSDK.Response.BiometricEvidence;
+using PluginICAOClientSDK.Response.FingerEnrollment;
 
 namespace PluginICAOClientSDK {
     public class ISPluginClient {
@@ -89,6 +90,11 @@ namespace PluginICAOClientSDK {
 
         public interface BiometricEvidenceListenner : DetailsListener {
             void onBiometricEvidence(BiometricEvidenceResp biometricEvidenceResp);
+        }
+
+        public interface FingerEnrollmentListener : DetailsListener
+        {
+            void onFingerEnrollment(FingerEnrollmentResp fingerEnrollmentResp);
         }
 
         public interface ISListener {
@@ -572,6 +578,52 @@ namespace PluginICAOClientSDK {
             catch (Exception ex) {
                 throw ex;
             }
+        }
+        #endregion
+
+        #region FINGER ENROLLMENT
+        public FingerEnrollmentResp fingerEnrollment(string cardNo, int timeoutInterval)
+        {
+            return (FingerEnrollmentResp)fingerEnrollmentSync(cardNo, timeoutInterval, null).waitResponse(timeoutInterval);
+        }
+
+        public ResponseSync<object> fingerEnrollmentSync(string cardNo, int timeoutInterval, FingerEnrollmentListener fingerEnrollmentListener)
+        {
+            string cmdType = Utils.ToDescription(CmdType.FingerEnrollment);
+            string reqID = Utils.getUUID();
+            RequireFingerEnrollment requireFingerEnrollment = new RequireFingerEnrollment();
+            requireFingerEnrollment.cardNo = cardNo;
+
+            ISRequest<object> req = new ISRequest<object>();
+            req.cmdType = Utils.ToDescription(CmdType.FingerEnrollment);
+            req.requestID = reqID;
+            req.timeoutInterval = timeoutInterval;
+            req.data = requireFingerEnrollment;
+
+            LOGGER.Debug(">>> SEND: [" + JsonConvert.SerializeObject(req) + "]");
+
+            ResponseSync<object> responseSync = new ResponseSync<object>();
+            responseSync.cmdType = cmdType;
+            responseSync.fingerEnrollmentListener = fingerEnrollmentListener;
+            responseSync.Wait = new System.Threading.CountdownEvent(1);
+
+            wsClient.request.Add(reqID, responseSync);
+
+            if (this.listener != null)
+            {
+                this.listener.doSend(cmdType, reqID, req);
+            }
+
+            if (null != this.pluginClientDelegate)
+            {
+                if (null != this.pluginClientDelegate.dlgSend)
+                {
+                    pluginClientDelegate.dlgSend(cmdType, reqID, req);
+                }
+            }
+
+            wsClient.sendData(JsonConvert.SerializeObject(req));
+            return responseSync;
         }
         #endregion
     }

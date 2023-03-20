@@ -16,6 +16,7 @@ using PluginICAOClientSDK.Response.CardDetectionEvent;
 using WebSocketSharp;
 using PluginICAOClientSDK.Response.ScanDocument;
 using PluginICAOClientSDK.Response.BiometricEvidence;
+using PluginICAOClientSDK.Response.FingerEnrollment;
 
 namespace PluginICAOClientSDK {
 
@@ -44,6 +45,7 @@ namespace PluginICAOClientSDK {
         private const string FUNC_REFRESH = "Refresh";
         private const string FUNC_SCAN_DOCUMENT = "ScanDocument";
         private const string FUNC_BIOMETRIC_EVIDENCE = "BiometricEvidence";
+        private const string FUNC_FINGER_ENROLLMENT = "FingerEnrollment";
         #endregion
 
         #region DELEGATE 
@@ -594,8 +596,16 @@ namespace PluginICAOClientSDK {
                             case FUNC_BIOMETRIC_EVIDENCE: //Func 2.11
                                 BiometricEvidenceResp biometricEvidenceResp = biometricEvidence(json);
                                 sync.setSuccess(biometricEvidenceResp);
-                                if(sync.biometricEvidenceListenner != null) {
+                                if(sync.biometricAuthenticationListener != null) {
                                     sync.biometricEvidenceListenner.onBiometricEvidence(biometricEvidenceResp);
+                                }
+                                break;
+                            case FUNC_FINGER_ENROLLMENT: //Func 2.12
+                                FingerEnrollmentResp fingerEnrollmentResp = fingerEnrollment(json);
+                                sync.setSuccess(fingerEnrollmentResp);
+                                if (sync.fingerEnrollmentListener != null)
+                                {
+                                    sync.fingerEnrollmentListener.onFingerEnrollment(fingerEnrollmentResp);
                                 }
                                 break;
                         }
@@ -622,6 +632,10 @@ namespace PluginICAOClientSDK {
                         }
                         if(sync.biometricEvidenceListenner != null) {
                             sync.biometricEvidenceListenner.onError(ex);
+                        }
+                        if (sync.fingerEnrollmentListener != null)
+                        {
+                            sync.fingerEnrollmentListener.onError(ex);
                         }
                     } finally {
                         request.Remove(reqID);
@@ -748,6 +762,14 @@ namespace PluginICAOClientSDK {
         private BiometricEvidenceResp biometricEvidence(string json) {
             BiometricEvidenceResp biometricEvidenceResp = JsonConvert.DeserializeObject<BiometricEvidenceResp>(json);
             return biometricEvidenceResp;
+        }
+        #endregion
+
+        #region FINGER ENROLLMENT
+        private FingerEnrollmentResp fingerEnrollment(string json)
+        {
+            FingerEnrollmentResp fingerEnrollmentResp = JsonConvert.DeserializeObject<FingerEnrollmentResp>(json);
+            return fingerEnrollmentResp;
         }
         #endregion
     }
